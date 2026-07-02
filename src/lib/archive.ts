@@ -36,12 +36,17 @@ export async function archivePlay(db: Db, gameId: number, answers: Answer[]): Pr
   const spec = GameSpecSchema.parse(game.spec)
   const profile = KnowledgeProfileSchema.parse(game.profile)
   const now = new Date()
-  const [note] = await db.insert(notes).values({
-    gameId, takeaways: profile.takeaways, answers, createdAt: now,
-  }).returning()
   const newCards = buildCards(spec, answers)
-  if (newCards.length > 0) {
-    await db.insert(cards).values(newCards.map(c => ({ ...c, noteId: note.id, dueAt: now, streak: 0 })))
-  }
-  return note.id
+
+  const noteId = db.transaction((tx) => {
+    const note = tx.insert(notes).values({
+      gameId, takeaways: profile.takeaways, answers, createdAt: now,
+    }).returning().get()
+    if (newCards.length > 0) {
+      tx.insert(cards).values(newCards.map(c => ({ ...c, noteId: note.id, dueAt: now, streak: 0 }))).run()
+    }
+    return note.id
+  })
+
+  return noteId
 }
