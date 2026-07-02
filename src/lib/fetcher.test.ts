@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { extractArticle } from './fetcher'
+import { extractArticle, fetchArticle } from './fetcher'
 
 const html = `<!DOCTYPE html><html><head><title>Raft 详解</title></head><body>
 <nav>导航垃圾</nav>
@@ -15,4 +15,8 @@ test('从 HTML 抽取正文', () => {
 
 test('空页面抛错', () => {
   expect(() => extractArticle('<html><body></body></html>', 'https://x.com')).toThrow()
+})
+
+test('非 http/https 协议被拒绝', async () => {
+  await expect(fetchArticle('file:///etc/passwd')).rejects.toThrow('仅支持 http/https')
 })

@@ -11,8 +11,20 @@ export function extractArticle(html: string, url: string): FetchedArticle {
   return { url, title: parsed.title?.trim() || url, siteName: parsed.siteName ?? null, content }
 }
 
+const MAX_RESPONSE_BYTES = 5 * 1024 * 1024
+const FETCH_TIMEOUT_MS = 30000
+
 export async function fetchArticle(url: string): Promise<FetchedArticle> {
-  const res = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; gamify-tech-blog/0.1)' } })
+  const parsed = new URL(url)
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error('仅支持 http/https 链接')
+  }
+  const res = await fetch(url, {
+    headers: { 'user-agent': 'Mozilla/5.0 (compatible; gamify-tech-blog/0.1)' },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  })
   if (!res.ok) throw new Error(`抓取失败：HTTP ${res.status}`)
-  return extractArticle(await res.text(), url)
+  const html = await res.text()
+  if (html.length > MAX_RESPONSE_BYTES) throw new Error('页面过大，无法处理')
+  return extractArticle(html, url)
 }
