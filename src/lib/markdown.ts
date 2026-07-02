@@ -13,8 +13,8 @@ export function noteToMarkdown(input: {
   const { title, url, siteName, createdAt, profile, spec, answers } = input
   const lines: string[] = [
     '---',
-    `source: ${url}`,
-    `site: ${siteName ?? ''}`,
+    `source: ${JSON.stringify(url)}`,
+    `site: ${JSON.stringify(siteName ?? '')}`,
     `date: ${createdAt.toISOString().slice(0, 10)}`,
     `tags: [技术博客游戏化, ${CATEGORY_TAGS[profile.category]}]`,
     '---',

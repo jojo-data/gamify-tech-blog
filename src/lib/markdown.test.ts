@@ -23,7 +23,7 @@ test('生成含 frontmatter、双链与错题的 markdown', () => {
     spec,
     answers: [{ nodeId: 'q1', choiceId: 'b', correct: false, scored: true }],
   })
-  expect(md).toMatch(/^---\nsource: https:\/\/x\.com\/pool\n/)
+  expect(md).toMatch(/^---\nsource: "https:\/\/x\.com\/pool"\n/)
   expect(md).toContain('[[连接池]]')
   expect(md).toContain('要点一')
   expect(md).toContain('连接池的作用？')   // 错题回顾

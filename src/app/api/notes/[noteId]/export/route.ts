@@ -26,7 +26,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ noteId:
   })
   const safeName = row.article.title.replace(/[\\/:*?"<>|]/g, '_').slice(0, 80)
   const vault = process.env.OBSIDIAN_VAULT_PATH
-  if (vault) fs.writeFileSync(path.join(vault, `${safeName}.md`), md, 'utf8')
+  if (vault) await fs.promises.writeFile(path.join(vault, `${safeName}.md`), md, 'utf8')
   return new Response(md, {
     headers: {
       'content-type': 'text/markdown; charset=utf-8',
