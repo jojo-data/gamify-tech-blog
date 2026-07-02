@@ -8,6 +8,7 @@ import * as schema from './schema'
 export function createDb(dbPath = process.env.DATABASE_PATH ?? 'data/app.db') {
   if (dbPath !== ':memory:') fs.mkdirSync(path.dirname(dbPath), { recursive: true })
   const sqlite = new Database(dbPath)
+  sqlite.pragma('foreign_keys = ON')
   const db = drizzle(sqlite, { schema })
   migrate(db, { migrationsFolder: path.join(process.cwd(), 'drizzle') })
   return db
