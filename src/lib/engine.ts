@@ -1,4 +1,4 @@
-import type { GameSpec, GameNode } from './gamespec'
+import type { GameSpec, GameNode, ClueHubNode } from './gamespec'
 
 export type Answer = { nodeId: string; choiceId: string; correct: boolean; scored: boolean }
 
@@ -24,11 +24,11 @@ function byId(spec: GameSpec, id: string): GameNode {
 }
 
 export function startGame(spec: GameSpec): EngineState {
-  const hub = spec.nodes.find(n => n.type === 'clueHub')
+  const hub = spec.nodes.find(n => n.type === 'clueHub') as ClueHubNode | undefined
   return {
     spec, currentId: spec.startNodeId, revealed: false,
     answers: [], openedClues: [],
-    budgetLeft: hub?.type === 'clueHub' ? hub.budget : 0,
+    budgetLeft: hub?.budget ?? 0,
     finished: byId(spec, spec.startNodeId).type === 'end',
   }
 }
@@ -62,8 +62,8 @@ export function reduce(state: EngineState, action: EngineAction): EngineState {
       let nextId: string
       if (node.type === 'question') {
         if (!state.revealed) return state
-        const last = state.answers[state.answers.length - 1]
-        const choice = node.choices.find(c => c.id === last.choiceId)
+        const answer = state.answers.findLast(a => a.nodeId === node.id)
+        const choice = node.choices.find(c => c.id === answer?.choiceId)
         nextId = choice?.next ?? node.next
       } else if (node.type === 'scene' || node.type === 'clueHub') {
         nextId = node.next
