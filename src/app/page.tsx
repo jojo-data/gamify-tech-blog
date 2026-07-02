@@ -3,6 +3,7 @@ import { desc, eq } from 'drizzle-orm'
 import { getDb } from '@/db'
 import { games, articles } from '@/db/schema'
 import { UrlForm } from '@/components/UrlForm'
+import { DailyChallenge } from '@/components/DailyChallenge'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,6 +16,7 @@ export default async function Home() {
     <main className="mx-auto max-w-2xl p-8 flex flex-col gap-8">
       <h1 className="text-2xl font-bold">博客游戏化</h1>
       <UrlForm />
+      <DailyChallenge />
       <section>
         <h2 className="mb-3 font-semibold text-gray-700">最近的游戏</h2>
         <ul className="flex flex-col gap-2">
