@@ -15,12 +15,15 @@ export async function createGameFromUrl(deps: PipelineDeps, url: string): Promis
   const article = await deps.fetchArticle(url)
   const profile = await analyzeArticle(deps.llm, article)
   const spec = await compileGame(deps.llm, profile, article.content)
-  const [articleRow] = await deps.db.insert(articles).values({
-    url: article.url, title: article.title, siteName: article.siteName,
-    content: article.content, fetchedAt: new Date(),
-  }).returning()
-  const [gameRow] = await deps.db.insert(games).values({
-    articleId: articleRow.id, profile, spec, createdAt: new Date(),
-  }).returning()
-  return gameRow.id
+  const gameId = deps.db.transaction((tx) => {
+    const articleRow = tx.insert(articles).values({
+      url: article.url, title: article.title, siteName: article.siteName,
+      content: article.content, fetchedAt: new Date(),
+    }).returning().get()
+    const gameRow = tx.insert(games).values({
+      articleId: articleRow.id, profile, spec, createdAt: new Date(),
+    }).returning().get()
+    return gameRow.id
+  })
+  return gameId
 }
