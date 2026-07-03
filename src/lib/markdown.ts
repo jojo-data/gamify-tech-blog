@@ -7,15 +7,16 @@ const CATEGORY_TAGS: Record<KnowledgeProfile['category'], string> = {
 }
 
 export function noteToMarkdown(input: {
-  title: string; url: string; siteName: string | null; createdAt: Date
+  noteId: number; title: string; url: string; siteName: string | null; createdAt: Date
   profile: KnowledgeProfile; spec: GameSpec; answers: Answer[]
 }): string {
-  const { title, url, siteName, createdAt, profile, spec, answers } = input
+  const { noteId, title, url, siteName, createdAt, profile, spec, answers } = input
   const lines: string[] = [
     '---',
     `source: ${JSON.stringify(url)}`,
     `site: ${JSON.stringify(siteName ?? '')}`,
     `date: ${createdAt.toISOString().slice(0, 10)}`,
+    `note-id: ${noteId}`,
     `tags: [技术博客游戏化, ${CATEGORY_TAGS[profile.category]}]`,
     '---',
     '',

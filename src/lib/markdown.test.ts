@@ -13,6 +13,7 @@ const spec = GameSpecSchema.parse({
 
 test('生成含 frontmatter、双链与错题的 markdown', () => {
   const md = noteToMarkdown({
+    noteId: 7,
     title: '连接池详解', url: 'https://x.com/pool', siteName: '某博客',
     createdAt: new Date('2026-07-03T10:00:00Z'),
     profile: {
@@ -28,4 +29,5 @@ test('生成含 frontmatter、双链与错题的 markdown', () => {
   expect(md).toContain('要点一')
   expect(md).toContain('连接池的作用？')   // 错题回顾
   expect(md).toContain('tags:')
+  expect(md).toContain('note-id: 7')
 })

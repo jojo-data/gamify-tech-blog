@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getDb } from '@/db'
 import { archivePlay } from '@/lib/archive'
+import { syncNoteToVault } from '@/lib/vault'
 
 const PlayBodySchema = z.object({
   gameId: z.number().int().positive(),
@@ -25,7 +26,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const noteId = await archivePlay(getDb(), parseResult.data.gameId, parseResult.data.answers)
+    const db = getDb()
+    const noteId = await archivePlay(db, parseResult.data.gameId, parseResult.data.answers)
+    try {
+      await syncNoteToVault(db, noteId)
+    } catch (e) {
+      console.error('通关笔记写入 Obsidian vault 失败（归档不受影响）：', e)
+    }
     return NextResponse.json({ noteId })
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : '归档失败' }, { status: 400 })
