@@ -11,16 +11,22 @@ export type CardData = {
 
 export function ChallengeCard({ card, onDone }: { card: CardData; onDone?: (correct: boolean) => void }) {
   const [chosen, setChosen] = useState<string | null>(null)
+  const [syncFailed, setSyncFailed] = useState(false)
 
   async function choose(choiceId: string) {
     if (chosen) return
     setChosen(choiceId)
     const correct = choiceId === card.correctChoiceId
-    fetch(`/api/cards/${card.id}`, {
-      method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ choiceId }),
-    }).catch(() => {})
     onDone?.(correct)
+    try {
+      const res = await fetch(`/api/cards/${card.id}`, {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ choiceId }),
+      })
+      if (!res.ok) setSyncFailed(true)
+    } catch {
+      setSyncFailed(true)
+    }
   }
 
   return (
@@ -38,6 +44,7 @@ export function ChallengeCard({ card, onDone }: { card: CardData; onDone?: (corr
         ))}
       </ul>
       {chosen && <p className="text-sm text-gray-600">💡 {card.explanation}</p>}
+      {syncFailed && <p className="text-xs text-amber-600">⚠ 复习进度同步失败，本次作答未记录</p>}
     </div>
   )
 }

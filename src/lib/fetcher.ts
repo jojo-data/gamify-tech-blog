@@ -24,6 +24,8 @@ export async function fetchArticle(url: string): Promise<FetchedArticle> {
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   })
   if (!res.ok) throw new Error(`抓取失败：HTTP ${res.status}`)
+  const contentLength = Number(res.headers.get('content-length'))
+  if (contentLength > MAX_RESPONSE_BYTES) throw new Error('页面过大，无法处理')
   const html = await res.text()
   if (html.length > MAX_RESPONSE_BYTES) throw new Error('页面过大，无法处理')
   return extractArticle(html, url)

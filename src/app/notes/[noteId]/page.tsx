@@ -33,7 +33,7 @@ export default async function NotePage({ params }: { params: Promise<{ noteId: s
     <article className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold">{row.article.title}</h1>
-        <a href={row.article.url} target="_blank" className="text-sm text-blue-600 hover:underline">原文 ↗</a>
+        <a href={row.article.url} target="_blank" rel="noreferrer noopener" className="text-sm text-blue-600 hover:underline">原文 ↗</a>
       </div>
       <section>
         <h2 className="mb-2 font-semibold">核心要点</h2>
