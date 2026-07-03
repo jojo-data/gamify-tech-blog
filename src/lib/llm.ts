@@ -1,18 +1,15 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { generateText } from 'ai'
 import type { z } from 'zod'
 
 export type LlmClient = { complete(prompt: string): Promise<string> }
 
-export function anthropicClient(): LlmClient {
-  const client = new Anthropic()
-  const model = process.env.ANTHROPIC_MODEL ?? 'claude-fable-5'
+// 经 Vercel AI Gateway 路由："provider/model" 字符串即可切换任意模型
+export function gatewayClient(): LlmClient {
+  const model = process.env.LLM_MODEL ?? 'anthropic/claude-sonnet-4.6'
   return {
     async complete(prompt) {
-      const msg = await client.messages.create({
-        model, max_tokens: 16000,
-        messages: [{ role: 'user', content: prompt }],
-      })
-      return msg.content.filter(b => b.type === 'text').map(b => b.text).join('')
+      const { text } = await generateText({ model, maxOutputTokens: 16000, prompt })
+      return text
     },
   }
 }
