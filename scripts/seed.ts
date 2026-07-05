@@ -5,6 +5,11 @@ import { GameSpecSchema } from '../src/lib/gamespec'
 const spec = GameSpecSchema.parse({
   version: 1, mode: 'detective', title: '数据库连接风暴之谜', intro: '凌晨 3 点，你被告警吵醒：API 全线超时。',
   startNodeId: 's1',
+  glossary: [
+    { term: '连接池', explanation: '应用与数据库之间预先建立并复用的一组连接，避免每次请求都新建连接的开销。' },
+    { term: 'p99', explanation: '99% 的请求延迟都不超过这个值，用来衡量最慢那批请求的体验。' },
+    { term: '慢查询', explanation: '执行时间显著超出预期的 SQL 查询，常见原因是没走索引。' },
+  ],
   nodes: [
     { id: 's1', type: 'scene', text: 'p99 延迟从 200ms 飙到 30s，数据库 CPU 却只有 40%。', next: 'hub' },
     { id: 'hub', type: 'clueHub', text: '你有限的精力只够查几件事。', budget: 5,

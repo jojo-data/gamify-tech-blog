@@ -3,6 +3,7 @@ import { useReducer, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { GameSpec } from '@/lib/gamespec'
 import { startGame, reduce, currentNode, score, type EngineState, type EngineAction } from '@/lib/engine'
+import { HelpPanel } from '@/components/HelpPanel'
 
 const MODE_LABELS: Record<GameSpec['mode'], string> = {
   decision: '决策冒险', detective: '侦探解谜', prediction: '预测闯关', quiz: '快问快答',
@@ -49,6 +50,7 @@ export function GameRuntime({ spec, gameId }: { spec: GameSpec; gameId: number }
       <div className="flex flex-col gap-4">
         <p className="whitespace-pre-wrap leading-relaxed">{node.text}</p>
         <button onClick={() => dispatch({ type: 'advance' })} className="w-fit rounded-lg bg-black px-6 py-2 text-white">继续</button>
+        <HelpPanel gameId={gameId} nodeId={node.id} nodeText={node.text} glossary={spec.glossary} />
       </div>
     )
   }
@@ -80,6 +82,7 @@ export function GameRuntime({ spec, gameId }: { spec: GameSpec; gameId: number }
           })}
         </ul>
         <button onClick={() => dispatch({ type: 'advance' })} className="w-fit rounded-lg bg-black px-6 py-2 text-white">我心里有数了，提出假设 →</button>
+        <HelpPanel gameId={gameId} nodeId={node.id} nodeText={node.text} glossary={spec.glossary} />
       </div>
     )
   }
@@ -105,6 +108,7 @@ export function GameRuntime({ spec, gameId }: { spec: GameSpec; gameId: number }
             </li>
           ))}
         </ul>
+        <HelpPanel gameId={gameId} nodeId={node.id} nodeText={node.text} glossary={spec.glossary} />
         {state.revealed && chosen && (
           <div className="rounded-lg bg-gray-50 p-4 text-sm flex flex-col gap-2">
             <p>{chosen.feedback}</p>
