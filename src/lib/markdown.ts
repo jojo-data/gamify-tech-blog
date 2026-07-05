@@ -9,8 +9,10 @@ const CATEGORY_TAGS: Record<KnowledgeProfile['category'], string> = {
 export function noteToMarkdown(input: {
   noteId: number; title: string; url: string; siteName: string | null; createdAt: Date
   profile: KnowledgeProfile; spec: GameSpec; answers: Answer[]
+  gaps: { query: string; explanation: string }[]
+  mistakes: { question: string; reveal: string }[]
 }): string {
-  const { noteId, title, url, siteName, createdAt, profile, spec, answers } = input
+  const { noteId, title, url, siteName, createdAt, profile, gaps, mistakes } = input
   const lines: string[] = [
     '---',
     `source: ${JSON.stringify(url)}`,
@@ -34,13 +36,15 @@ export function noteToMarkdown(input: {
       lines.push(`- [[${c.name}]]：${c.definition}${deps}`)
     }
   }
-  const mistakes = answers.filter(a => a.scored && !a.correct)
   if (mistakes.length > 0) {
     lines.push('', '## 当时做错的题')
     for (const m of mistakes) {
-      const node = spec.nodes.find(n => n.id === m.nodeId)
-      if (node?.type === 'question') lines.push(`- **${node.text}** — ${node.reveal}`)
+      lines.push(`- **${m.question}** — ${m.reveal}`)
     }
+  }
+  if (gaps.length > 0) {
+    lines.push('', '## Knowledge gaps')
+    for (const g of gaps) lines.push(`- **${g.query}** — ${g.explanation}`)
   }
   lines.push('', `[原文](${url})`, '')
   return lines.join('\n')

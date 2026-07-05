@@ -23,6 +23,8 @@ test('生成含 frontmatter、双链与错题的 markdown', () => {
     },
     spec,
     answers: [{ nodeId: 'q1', choiceId: 'b', correct: false, scored: true }],
+    gaps: [{ query: 'connection pool (连接池)', explanation: 'Reusable DB connections' }],
+    mistakes: [{ question: '连接池的作用？', reveal: '复用连接' }],
   })
   expect(md).toMatch(/^---\nsource: "https:\/\/x\.com\/pool"\n/)
   expect(md).toContain('[[连接池]]')
@@ -30,4 +32,6 @@ test('生成含 frontmatter、双链与错题的 markdown', () => {
   expect(md).toContain('连接池的作用？')   // 错题回顾
   expect(md).toContain('tags:')
   expect(md).toContain('note-id: 7')
+  expect(md).toContain('## Knowledge gaps')
+  expect(md).toContain('connection pool (连接池)')
 })

@@ -22,10 +22,11 @@ export default async function NotePage({ params }: { params: Promise<{ noteId: s
   const profile = KnowledgeProfileSchema.parse(row.game.profile)
   const spec = GameSpecSchema.parse(row.game.spec)
   const answers = row.note.answers as Answer[]
-  const mistakes = answers.filter(a => a.scored && !a.correct).map(a => {
-    const node = spec.nodes.find(n => n.id === a.nodeId)
-    return node?.type === 'question' ? { question: node.text, reveal: node.reveal } : null
-  }).filter(Boolean) as { question: string; reveal: string }[]
+  const storedMistakes = row.note.mistakes as { question: string; reveal: string }[]
+  const mistakes = storedMistakes.length > 0 ? storedMistakes : answers
+    .filter(a => a.scored && !a.correct)
+    .map(a => { const node = spec.nodes.find(n => n.id === a.nodeId); return node?.type === 'question' ? { question: node.text, reveal: node.reveal } : null })
+    .filter((m): m is { question: string; reveal: string } => m !== null)
   const [dueCard] = await db.select().from(cards)
     .where(and(eq(cards.noteId, row.note.id), lte(cards.dueAt, new Date()))).limit(1)
 
@@ -62,6 +63,19 @@ export default async function NotePage({ params }: { params: Promise<{ noteId: s
               <li key={i} className="rounded-lg bg-red-50 p-3 text-sm">
                 <p className="font-medium">{m.question}</p>
                 <p className="mt-1 text-gray-600">💡 {m.reveal}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {(row.note.gaps as { query: string; explanation: string }[]).length > 0 && (
+        <section>
+          <h2 className="mb-2 font-semibold">Knowledge gaps（当时求助过）</h2>
+          <ul className="flex flex-col gap-2">
+            {(row.note.gaps as { query: string; explanation: string }[]).map((g, i) => (
+              <li key={i} className="rounded-lg bg-amber-50 p-3 text-sm">
+                <p className="font-medium">{g.query}</p>
+                <p className="mt-1 text-gray-600">{g.explanation}</p>
               </li>
             ))}
           </ul>

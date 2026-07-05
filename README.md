@@ -9,12 +9,18 @@
 
 ## 切换模型
 LLM 调用经 AI Gateway 路由，改 `.env` 里的 `LLM_MODEL` 即可切换任意模型（`provider/model` 格式，版本号用点）：
-`anthropic/claude-sonnet-5`、`openai/gpt-5.4`、`google/gemini-3-flash` 等 100+ 模型。
+`anthropic/claude-sonnet-5`、`openai/gpt-5.4`、`google/gemini-3-flash` 等 100+ 模型。`LLM_LITE_MODEL` 负责求助/翻译等轻量任务。
 
 ## 常用命令
 - `npm test` — 单元测试
 - `npm run seed` — 插入种子游戏（无需 API key 即可体验）
 - `npm run golden -- <url>` — 真实 LLM 金样本回归（人工评估）
+
+## 适配读者
+- 游戏内容语言跟随原文（英文博客→英文游戏）；知识库归档统一英文，非英文术语保留原文对照
+- 生成时可选难度（初学者/熟悉领域），游戏页可换难度重开（复用分析结果，只重新编译）
+- 游戏内双轨求助：点术语 chips 看白话解释；「这里没看懂？问一下」自由提问（轻量模型实时回答）
+- 求助记录归档为 Knowledge gaps + 术语挑战卡，与错题卡一起进入间隔重复
 
 ## Obsidian 同步
 在 `.env` 设置 `OBSIDIAN_VAULT_PATH`（可指向 vault 内子文件夹，不存在会自动创建）后：

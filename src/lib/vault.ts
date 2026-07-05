@@ -19,13 +19,22 @@ export async function buildNoteExport(db: Db, noteId: number): Promise<{ md: str
     .innerJoin(articles, eq(games.articleId, articles.id))
     .where(eq(notes.id, noteId))
   if (!row) return null
+  const answers = row.note.answers as Answer[]
+  const spec = GameSpecSchema.parse(row.game.spec)
+  const storedMistakes = row.note.mistakes as { question: string; reveal: string }[]
+  const mistakes = storedMistakes.length > 0 ? storedMistakes : answers
+    .filter(a => a.scored && !a.correct)
+    .map(a => { const n = spec.nodes.find(x => x.id === a.nodeId); return n?.type === 'question' ? { question: n.text, reveal: n.reveal } : null })
+    .filter((m): m is { question: string; reveal: string } => m !== null)
   const md = noteToMarkdown({
     noteId,
     title: row.article.title, url: row.article.url, siteName: row.article.siteName,
     createdAt: row.note.createdAt,
     profile: KnowledgeProfileSchema.parse(row.game.profile),
-    spec: GameSpecSchema.parse(row.game.spec),
-    answers: row.note.answers as Answer[],
+    spec,
+    answers,
+    gaps: row.note.gaps as { query: string; explanation: string }[],
+    mistakes,
   })
   return { md, title: row.article.title }
 }
