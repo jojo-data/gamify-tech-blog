@@ -10,5 +10,5 @@ CREATE TABLE `hints` (
 );
 --> statement-breakpoint
 ALTER TABLE `games` ADD `difficulty` text DEFAULT 'beginner' NOT NULL;--> statement-breakpoint
-ALTER TABLE `notes` ADD `gaps` text NOT NULL;--> statement-breakpoint
-ALTER TABLE `notes` ADD `mistakes` text NOT NULL;
+ALTER TABLE `notes` ADD `gaps` text DEFAULT '[]' NOT NULL;--> statement-breakpoint
+ALTER TABLE `notes` ADD `mistakes` text DEFAULT '[]' NOT NULL;

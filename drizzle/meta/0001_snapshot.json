@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "058e7024-ee5f-4ce1-9851-c1d14445bbc9",
+  "id": "6dc472c1-c8a1-441d-8192-dc0c3bba0c4a",
   "prevId": "4672ee00-1cdf-491b-9ac8-141fdb75f9b0",
   "tables": {
     "articles": {
@@ -313,14 +313,16 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "'[]'"
         },
         "mistakes": {
           "name": "mistakes",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "'[]'"
         },
         "created_at": {
           "name": "created_at",

@@ -23,8 +23,8 @@ export const notes = sqliteTable('notes', {
   gameId: integer('game_id').notNull().references(() => games.id),
   takeaways: text('takeaways', { mode: 'json' }).notNull(),
   answers: text('answers', { mode: 'json' }).notNull(),
-  gaps: text('gaps', { mode: 'json' }).notNull().$defaultFn(() => []),
-  mistakes: text('mistakes', { mode: 'json' }).notNull().$defaultFn(() => []),
+  gaps: text('gaps', { mode: 'json' }).notNull().default([]),
+  mistakes: text('mistakes', { mode: 'json' }).notNull().default([]),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })
 
