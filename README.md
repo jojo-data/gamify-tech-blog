@@ -9,7 +9,7 @@
 
 ## 切换模型
 LLM 调用经 AI Gateway 路由，改 `.env` 里的 `LLM_MODEL` 即可切换任意模型（`provider/model` 格式，版本号用点）：
-`anthropic/claude-sonnet-4.6`、`openai/gpt-5.4`、`google/gemini-3-flash` 等 100+ 模型。
+`anthropic/claude-sonnet-5`、`openai/gpt-5.4`、`google/gemini-3-flash` 等 100+ 模型。
 
 ## 常用命令
 - `npm test` — 单元测试

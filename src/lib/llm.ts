@@ -5,7 +5,7 @@ export type LlmClient = { complete(prompt: string): Promise<string> }
 
 // 经 Vercel AI Gateway 路由："provider/model" 字符串即可切换任意模型
 export function gatewayClient(): LlmClient {
-  const model = process.env.LLM_MODEL ?? 'anthropic/claude-sonnet-4.6'
+  const model = process.env.LLM_MODEL ?? 'anthropic/claude-sonnet-5'
   return {
     async complete(prompt) {
       const { text } = await generateText({ model, maxOutputTokens: 16000, prompt })
