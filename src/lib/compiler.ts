@@ -2,6 +2,8 @@ import { completeJson, type LlmClient } from './llm'
 import { GameSpecSchema, type GameSpec, type Mode } from './gamespec'
 import type { KnowledgeProfile } from './profile'
 
+export type Difficulty = 'beginner' | 'expert'
+
 export const MODE_BY_CATEGORY: Record<KnowledgeProfile['category'], Mode> = {
   architecture: 'decision',
   postmortem: 'detective',
@@ -16,19 +18,27 @@ const MODE_GUIDES: Record<Mode, string> = {
   quiz: `玩法：快问快答。恰好 5 个 question 节点（scored true），每题是取材于文章的场景判断题，无剧情节点，startNodeId 指向第一题，最后接 end。`,
 }
 
+const DIFFICULTY_GUIDES: Record<Difficulty, string> = {
+  beginner: `难度：初学者。场景先用通俗语言铺垫必要背景；专业术语首次出现时就地用一句话解释；题目给足上下文，不假设读者读过原文。`,
+  expert: `难度：熟悉领域。保持原文的信息密度与节奏，铺垫从简，不解释业内常识。`,
+}
+
 const SPEC_SHAPE = `{"version":1,"mode":"<模式>","title":"...","intro":"开场白","startNodeId":"...","nodes":[
  {"id":"...","type":"scene","text":"...","next":"..."},
  {"id":"...","type":"question","text":"...","scored":true,"choices":[{"id":"a","text":"...","correct":true,"feedback":"...","next":"可选"}],"reveal":"...","next":"..."},
  {"id":"...","type":"clueHub","text":"...","budget":6,"clues":[{"id":"c1","label":"...","cost":2,"content":"..."}],"next":"..."},
- {"id":"...","type":"end","summary":"..."}]}`
+ {"id":"...","type":"end","summary":"..."}],"glossary":[{"term":"...","explanation":"..."}]}`
 
-function buildPrompt(mode: Mode, profile: KnowledgeProfile, articleContent: string): string {
+function buildPrompt(mode: Mode, profile: KnowledgeProfile, articleContent: string, difficulty: Difficulty): string {
   return `你是一名教育游戏设计师。根据下面的知识档案和文章正文，产出一份中文游戏谱 JSON。
 
 ${MODE_GUIDES[mode]}
 
 硬性规则：
 - mode 必须是 "${mode}"
+- ${DIFFICULTY_GUIDES[difficulty]}
+- 游戏谱所有内容字段（title/intro/text/choices/feedback/reveal/glossary）必须使用文章的原文语言（${profile.language}）书写
+- glossary：预判读者可能不懂的高频术语（初学者 5-15 条，熟悉领域 0-8 条），explanation 用原文语言、面向初学者的白话
 - 所有节点 id 唯一；所有 next / choice.next 必须指向存在的节点；必须有 end 节点
 - scored 为 true 的 question 必须恰有一个 choice 的 correct 为 true
 - 内容必须忠于原文，不得编造文章没有的事实
@@ -40,13 +50,13 @@ ${articleContent.slice(0, 40000)}`
 }
 
 export async function compileGame(
-  client: LlmClient, profile: KnowledgeProfile, articleContent: string,
+  client: LlmClient, profile: KnowledgeProfile, articleContent: string, difficulty: Difficulty = 'beginner',
 ): Promise<GameSpec> {
   const mode = MODE_BY_CATEGORY[profile.category]
   try {
-    return await completeJson(client, buildPrompt(mode, profile, articleContent), GameSpecSchema)
+    return await completeJson(client, buildPrompt(mode, profile, articleContent, difficulty), GameSpecSchema)
   } catch (e) {
     if (mode === 'quiz') throw e
-    return completeJson(client, buildPrompt('quiz', profile, articleContent), GameSpecSchema)
+    return completeJson(client, buildPrompt('quiz', profile, articleContent, difficulty), GameSpecSchema)
   }
 }
