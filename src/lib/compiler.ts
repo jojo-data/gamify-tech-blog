@@ -30,7 +30,7 @@ const SPEC_SHAPE = `{"version":1,"mode":"<模式>","title":"...","intro":"开场
  {"id":"...","type":"end","summary":"..."}],"glossary":[{"term":"...","explanation":"..."}]}`
 
 function buildPrompt(mode: Mode, profile: KnowledgeProfile, articleContent: string, difficulty: Difficulty): string {
-  return `你是一名教育游戏设计师。根据下面的知识档案和文章正文，产出一份中文游戏谱 JSON。
+  return `你是一名教育游戏设计师。根据下面的知识档案和文章正文，产出一份游戏谱 JSON。
 
 ${MODE_GUIDES[mode]}
 

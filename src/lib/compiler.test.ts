@@ -55,6 +55,7 @@ test('难度指南与语言指令进入 prompt', async () => {
   prompts.length = 0
   await compileGame(client, { ...profile, language: 'en' }, '正文', 'expert')
   expect(prompts[0]).toContain('熟悉领域')
+  expect(prompts[0]).toContain('原文语言（en）')
 })
 
 test('难度缺省为 beginner', async () => {
