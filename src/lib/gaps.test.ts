@@ -5,7 +5,7 @@ import type { LlmClient } from './llm'
 const termCardsJson = JSON.stringify({
   cards: [{
     question: 'What is a connection pool (连接池)?',
-    choices: [{ id: 'a', text: 'A reusable set of DB connections' }, { id: 'b', text: 'A network cable bundle' }],
+    choices: [{ id: 'a', text: 'A reusable set of DB connections' }, { id: 'b', text: 'A network cable bundle' }, { id: 'c', text: 'A type of database index' }],
     correctChoiceId: 'a',
     explanation: 'A pre-established, reusable set of connections.',
   }],

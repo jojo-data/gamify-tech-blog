@@ -5,7 +5,7 @@ import type { NewCard } from './archive'
 
 const CardShape = z.object({
   question: z.string(),
-  choices: z.array(z.object({ id: z.string(), text: z.string() })).min(2),
+  choices: z.array(z.object({ id: z.string(), text: z.string() })).min(3),
   correctChoiceId: z.string(),
   explanation: z.string(),
 })
@@ -23,7 +23,7 @@ export async function buildTermCards(lite: LlmClient, gaps: GameHint[], language
 Items:
 ${gaps.map((g, i) => `${i + 1}. term/question: ${g.query}\n   explanation given: ${g.explanation}`).join('\n')}
 
-Output ONLY JSON: {"cards":[{"question":"...","choices":[{"id":"a","text":"..."}],"correctChoiceId":"a","explanation":"..."}]}`
+Output ONLY JSON: {"cards":[{"question":"...","choices":[{"id":"a","text":"..."},{"id":"b","text":"..."},{"id":"c","text":"..."}],"correctChoiceId":"a","explanation":"..."}]}`
   const result = await completeJson(lite, prompt, TermCardsSchema)
   return result.cards
 }
