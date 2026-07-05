@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { getDb } from '@/db'
 import { archivePlay } from '@/lib/archive'
 import { syncNoteToVault } from '@/lib/vault'
+import { liteClient } from '@/lib/llm'
 
 const PlayBodySchema = z.object({
   gameId: z.number().int().positive(),
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
 
   try {
     const db = getDb()
-    const noteId = await archivePlay(db, parseResult.data.gameId, parseResult.data.answers)
+    const noteId = await archivePlay(db, parseResult.data.gameId, parseResult.data.answers, liteClient())
     try {
       await syncNoteToVault(db, noteId)
     } catch (e) {
