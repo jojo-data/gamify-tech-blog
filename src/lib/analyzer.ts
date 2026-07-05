@@ -8,7 +8,7 @@ export async function analyzeArticle(client: LlmClient, article: FetchedArticle)
   const content = article.content.length > MAX_CHARS
     ? article.content.slice(0, MAX_CHARS) + '\n……（正文过长已截断）'
     : article.content
-  const prompt = `你是一名技术学习设计师。请阅读下面的技术博客，产出一份中文「知识档案」JSON。
+  const prompt = `你是一名技术学习设计师。请阅读下面的技术博客，产出一份「知识档案」JSON。
 
 要求：
 - language：文章正文的主要语言，BCP-47 短码（如 en、zh、ja）；无法判断时用 en
