@@ -19,7 +19,7 @@ test('生成含 frontmatter、双链与错题的 markdown', () => {
     profile: {
       category: 'concept', summary: '讲连接池',
       concepts: [{ name: '连接池', definition: '连接的共享池', dependsOn: [] }],
-      decisions: [], misconceptions: [], takeaways: ['要点一', '要点二', '要点三'],
+      decisions: [], misconceptions: [], takeaways: ['要点一', '要点二', '要点三'], language: 'en',
     },
     spec,
     answers: [{ nodeId: 'q1', choiceId: 'b', correct: false, scored: true }],

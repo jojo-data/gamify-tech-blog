@@ -5,7 +5,7 @@ import type { KnowledgeProfile } from './profile'
 
 const profile: KnowledgeProfile = {
   category: 'postmortem', summary: '一次数据库故障', concepts: [], decisions: [],
-  misconceptions: [], takeaways: ['a', 'b', 'c'],
+  misconceptions: [], takeaways: ['a', 'b', 'c'], language: 'en',
 }
 
 const validSpec = JSON.stringify({

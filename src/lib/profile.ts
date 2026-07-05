@@ -16,6 +16,7 @@ export const KnowledgeProfileSchema = z.object({
   })).default([]),
   misconceptions: z.array(z.object({ wrong: z.string(), right: z.string() })).default([]),
   takeaways: z.array(z.string()).min(3).max(5),
+  language: z.string().default('en'),
 })
 
 export type KnowledgeProfile = z.infer<typeof KnowledgeProfileSchema>

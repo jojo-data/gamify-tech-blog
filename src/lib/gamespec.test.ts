@@ -39,3 +39,13 @@ test('缺少 end 节点被拒绝', () => {
   ;(bad.nodes[0] as { next: string }).next = 'q1'
   expect(GameSpecSchema.safeParse(bad).success).toBe(false)
 })
+
+test('glossary 缺省为空数组，可显式提供', () => {
+  const spec = GameSpecSchema.parse(base)
+  expect(spec.glossary).toEqual([])
+  const withGlossary = GameSpecSchema.parse({
+    ...base,
+    glossary: [{ term: 'p99', explanation: '99% 请求的延迟不超过该值' }],
+  })
+  expect(withGlossary.glossary).toHaveLength(1)
+})
