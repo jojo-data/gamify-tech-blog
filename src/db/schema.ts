@@ -14,6 +14,7 @@ export const games = sqliteTable('games', {
   articleId: integer('article_id').notNull().references(() => articles.id),
   profile: text('profile', { mode: 'json' }).notNull(),
   spec: text('spec', { mode: 'json' }).notNull(),
+  difficulty: text('difficulty').notNull().default('beginner'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })
 
@@ -22,6 +23,8 @@ export const notes = sqliteTable('notes', {
   gameId: integer('game_id').notNull().references(() => games.id),
   takeaways: text('takeaways', { mode: 'json' }).notNull(),
   answers: text('answers', { mode: 'json' }).notNull(),
+  gaps: text('gaps', { mode: 'json' }).notNull().$defaultFn(() => []),
+  mistakes: text('mistakes', { mode: 'json' }).notNull().$defaultFn(() => []),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })
 
@@ -34,4 +37,14 @@ export const cards = sqliteTable('cards', {
   explanation: text('explanation').notNull(),
   dueAt: integer('due_at', { mode: 'timestamp' }).notNull(),
   streak: integer('streak').notNull().default(0),
+})
+
+export const hints = sqliteTable('hints', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  gameId: integer('game_id').notNull().references(() => games.id),
+  nodeId: text('node_id').notNull(),
+  kind: text('kind').notNull(),
+  query: text('query').notNull(),
+  explanation: text('explanation').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })
