@@ -77,10 +77,10 @@ export function ChatDrawer({ gameId, nodeId }: { gameId: number; nodeId: string 
               </div>
             ))}
             {busy && <p className="self-start animate-pulse text-gray-400 dark:text-gray-500">思考中…</p>}
-            {error && <p className="text-xs text-red-500">求助失败，请重试</p>}
+            {error && <p className="text-xs text-red-500 dark:text-red-400">求助失败，请重试</p>}
           </div>
           <form onSubmit={e => { e.preventDefault(); send() }} className="flex gap-2 border-t dark:border-gray-700 p-3">
-            <textarea value={input} onChange={e => setInput(e.target.value)} rows={2}
+            <textarea value={input} onChange={e => setInput(e.target.value)} rows={2} maxLength={500}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
               placeholder="哪里没看懂？用任何语言问都行（Enter 发送）"
               className="flex-1 rounded-lg border dark:border-gray-700 dark:bg-gray-950 p-2 text-sm" />
