@@ -18,17 +18,17 @@ export default async function Home() {
       <UrlForm />
       <DailyChallenge />
       <section>
-        <h2 className="mb-3 font-semibold text-gray-700">最近的游戏</h2>
+        <h2 className="mb-3 font-semibold text-gray-700 dark:text-gray-300">最近的游戏</h2>
         <ul className="flex flex-col gap-2">
           {recent.map(g => (
             <li key={g.id}>
-              <Link href={`/play/${g.id}`} className="text-blue-600 hover:underline">{g.title}</Link>
+              <Link href={`/play/${g.id}`} className="text-blue-600 dark:text-blue-400 hover:underline">{g.title}</Link>
             </li>
           ))}
           {recent.length === 0 && <li className="text-gray-400">还没有游戏，贴一个链接开始吧</li>}
         </ul>
       </section>
-      <Link href="/notes" className="text-sm text-gray-500 hover:underline">→ 知识库</Link>
+      <Link href="/notes" className="text-sm text-gray-500 dark:text-gray-400 hover:underline">→ 知识库</Link>
     </main>
   )
 }

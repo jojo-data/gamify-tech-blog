@@ -19,19 +19,19 @@ export default async function NotesPage({ searchParams }: { searchParams: Promis
       <h1 className="text-2xl font-bold">知识库</h1>
       <form className="flex gap-2">
         <input name="q" defaultValue={q ?? ''} placeholder="搜索笔记标题"
-          className="flex-1 rounded-lg border px-4 py-2" />
-        <button className="rounded-lg bg-black px-4 py-2 text-white">搜索</button>
+          className="flex-1 rounded-lg border dark:border-gray-700 dark:bg-gray-900 px-4 py-2" />
+        <button className="rounded-lg bg-black dark:bg-white px-4 py-2 text-white dark:text-black">搜索</button>
       </form>
       <ul className="flex flex-col gap-2">
         {rows.map(n => (
-          <li key={n.id} className="rounded-lg border p-3">
-            <Link href={`/notes/${n.id}`} className="font-medium text-blue-600 hover:underline">{n.title}</Link>
+          <li key={n.id} className="rounded-lg border dark:border-gray-700 p-3">
+            <Link href={`/notes/${n.id}`} className="font-medium text-blue-600 dark:text-blue-400 hover:underline">{n.title}</Link>
             <p className="text-xs text-gray-400">{n.createdAt.toLocaleDateString('zh-CN')}</p>
           </li>
         ))}
         {rows.length === 0 && <li className="text-gray-400">没有找到笔记</li>}
       </ul>
-      <Link href="/" className="text-sm text-gray-500 hover:underline">← 首页</Link>
+      <Link href="/" className="text-sm text-gray-500 dark:text-gray-400 hover:underline">← 首页</Link>
     </main>
   )
 }

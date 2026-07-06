@@ -37,10 +37,10 @@ export function GameRuntime({ spec, gameId }: { spec: GameSpec; gameId: number }
   if (!started) {
     return (
       <div className="flex flex-col gap-4">
-        <span className="w-fit rounded-full bg-gray-100 px-3 py-1 text-xs">{MODE_LABELS[spec.mode]}</span>
+        <span className="w-fit rounded-full bg-gray-100 dark:bg-gray-700 px-3 py-1 text-xs">{MODE_LABELS[spec.mode]}</span>
         <h1 className="text-2xl font-bold">{spec.title}</h1>
-        <p className="whitespace-pre-wrap text-gray-700">{spec.intro}</p>
-        <button onClick={() => setStarted(true)} className="w-fit rounded-lg bg-black px-6 py-3 text-white">开始</button>
+        <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">{spec.intro}</p>
+        <button onClick={() => setStarted(true)} className="w-fit rounded-lg bg-black dark:bg-white px-6 py-3 text-white dark:text-black">开始</button>
       </div>
     )
   }
@@ -49,7 +49,7 @@ export function GameRuntime({ spec, gameId }: { spec: GameSpec; gameId: number }
     return (
       <div className="flex flex-col gap-4">
         <p className="whitespace-pre-wrap leading-relaxed">{node.text}</p>
-        <button onClick={() => dispatch({ type: 'advance' })} className="w-fit rounded-lg bg-black px-6 py-2 text-white">继续</button>
+        <button onClick={() => dispatch({ type: 'advance' })} className="w-fit rounded-lg bg-black dark:bg-white px-6 py-2 text-white dark:text-black">继续</button>
         <HelpPanel key={node.id} gameId={gameId} nodeId={node.id} nodeText={node.text} glossary={spec.glossary} />
       </div>
     )
@@ -59,29 +59,29 @@ export function GameRuntime({ spec, gameId }: { spec: GameSpec; gameId: number }
     return (
       <div className="flex flex-col gap-4">
         <p className="whitespace-pre-wrap">{node.text}</p>
-        <p className="text-sm text-gray-500">线索预算：{state.budgetLeft} 点（像 on-call 一样，先查最值得查的）</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">线索预算：{state.budgetLeft} 点（像 on-call 一样，先查最值得查的）</p>
         <ul className="flex flex-col gap-2">
           {node.clues.map(clue => {
             const opened = state.openedClues.includes(clue.id)
             return (
-              <li key={clue.id} className="rounded-lg border p-3">
+              <li key={clue.id} className="rounded-lg border dark:border-gray-700 p-3">
                 {opened ? (
                   <><span className="font-medium">{clue.label}</span>
-                  <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700">{clue.content}</p></>
+                  <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">{clue.content}</p></>
                 ) : (
                   <button
                     onClick={() => dispatch({ type: 'openClue', clueId: clue.id })}
                     disabled={clue.cost > state.budgetLeft}
                     className="flex w-full justify-between disabled:opacity-40"
                   >
-                    <span>🔍 {clue.label}</span><span className="text-sm text-gray-500">花费 {clue.cost}</span>
+                    <span>🔍 {clue.label}</span><span className="text-sm text-gray-500 dark:text-gray-400">花费 {clue.cost}</span>
                   </button>
                 )}
               </li>
             )
           })}
         </ul>
-        <button onClick={() => dispatch({ type: 'advance' })} className="w-fit rounded-lg bg-black px-6 py-2 text-white">我心里有数了，提出假设 →</button>
+        <button onClick={() => dispatch({ type: 'advance' })} className="w-fit rounded-lg bg-black dark:bg-white px-6 py-2 text-white dark:text-black">我心里有数了，提出假设 →</button>
         <HelpPanel key={node.id} gameId={gameId} nodeId={node.id} nodeText={node.text} glossary={spec.glossary} />
       </div>
     )
@@ -101,8 +101,8 @@ export function GameRuntime({ spec, gameId }: { spec: GameSpec; gameId: number }
                 disabled={state.revealed}
                 className={`w-full rounded-lg border p-3 text-left ${
                   state.revealed && c.id === chosen?.id
-                    ? (!node.scored ? 'border-blue-500 bg-blue-50' : c.correct ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50')
-                    : state.revealed && node.scored && c.correct ? 'border-green-500 bg-green-50' : 'hover:bg-gray-50'
+                    ? (!node.scored ? 'border-blue-500 bg-blue-50 dark:bg-blue-950' : c.correct ? 'border-green-500 bg-green-50 dark:bg-green-950' : 'border-red-500 bg-red-50 dark:bg-red-950')
+                    : state.revealed && node.scored && c.correct ? 'border-green-500 bg-green-50 dark:bg-green-950' : 'hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
                 }`}
               >{c.text}</button>
             </li>
@@ -110,10 +110,10 @@ export function GameRuntime({ spec, gameId }: { spec: GameSpec; gameId: number }
         </ul>
         <HelpPanel key={node.id} gameId={gameId} nodeId={node.id} nodeText={node.text} glossary={spec.glossary} />
         {state.revealed && chosen && (
-          <div className="rounded-lg bg-gray-50 p-4 text-sm flex flex-col gap-2">
+          <div className="rounded-lg bg-gray-50 dark:bg-gray-800 p-4 text-sm flex flex-col gap-2">
             <p>{chosen.feedback}</p>
-            <p className="text-gray-600">💡 {node.reveal}</p>
-            <button onClick={() => dispatch({ type: 'advance' })} className="w-fit rounded-lg bg-black px-4 py-2 text-white">继续</button>
+            <p className="text-gray-600 dark:text-gray-400">💡 {node.reveal}</p>
+            <button onClick={() => dispatch({ type: 'advance' })} className="w-fit rounded-lg bg-black dark:bg-white px-4 py-2 text-white dark:text-black">继续</button>
           </div>
         )}
       </div>
@@ -125,9 +125,9 @@ export function GameRuntime({ spec, gameId }: { spec: GameSpec; gameId: number }
     <div className="flex flex-col gap-4">
       <h2 className="text-xl font-bold">通关 🎉</h2>
       {s.total > 0 && <p>得分：{s.correct} / {s.total}</p>}
-      <p className="whitespace-pre-wrap text-gray-700">{node.summary}</p>
+      <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">{node.summary}</p>
       {noteId === null && (
-        <button onClick={archive} disabled={saving} className="w-fit rounded-lg bg-black px-6 py-3 text-white disabled:opacity-50">
+        <button onClick={archive} disabled={saving} className="w-fit rounded-lg bg-black dark:bg-white px-6 py-3 text-white dark:text-black disabled:opacity-50">
           {saving ? '归档中…' : '归档到知识库'}
         </button>
       )}

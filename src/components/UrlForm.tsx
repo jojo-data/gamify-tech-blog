@@ -38,13 +38,13 @@ export function UrlForm() {
         <input
           value={url} onChange={e => setUrl(e.target.value)} required type="url"
           placeholder="粘贴技术博客链接，把它变成一局游戏"
-          className="flex-1 rounded-lg border px-4 py-3"
+          className="flex-1 rounded-lg border dark:border-gray-700 dark:bg-gray-900 px-4 py-3"
         />
-        <button disabled={busy} className="rounded-lg bg-black px-6 py-3 text-white disabled:opacity-50">
+        <button disabled={busy} className="rounded-lg bg-black dark:bg-white px-6 py-3 text-white dark:text-black disabled:opacity-50">
           {busy ? '生成中…' : '开玩'}
         </button>
       </div>
-      <div className="flex gap-4 text-sm text-gray-600">
+      <div className="flex gap-4 text-sm text-gray-600 dark:text-gray-400">
         <label className="flex items-center gap-1">
           <input type="radio" checked={difficulty === 'beginner'} onChange={() => setDifficulty('beginner')} />
           初学者（白话铺垫）
@@ -54,8 +54,8 @@ export function UrlForm() {
           熟悉领域（原文节奏）
         </label>
       </div>
-      {busy && <p className="text-sm text-gray-500 animate-pulse">{STAGES[stage]}</p>}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {busy && <p className="text-sm text-gray-500 dark:text-gray-400 animate-pulse">{STAGES[stage]}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </form>
   )
 }

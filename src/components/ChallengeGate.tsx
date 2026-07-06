@@ -8,9 +8,9 @@ export function ChallengeGate({ card, children }: { card: CardData; children: Re
   if (passed) return <>{children}</>
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-gray-500">在看笔记之前，先试试还记不记得——</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400">在看笔记之前，先试试还记不记得——</p>
       <ChallengeCard card={card} onDone={() => setAnswered(true)} />
-      <button onClick={() => setPassed(true)} className="w-fit text-sm text-gray-500 underline">
+      <button onClick={() => setPassed(true)} className="w-fit text-sm text-gray-500 dark:text-gray-400 underline">
         {answered ? '继续看笔记 →' : '跳过，直接看笔记'}
       </button>
     </div>

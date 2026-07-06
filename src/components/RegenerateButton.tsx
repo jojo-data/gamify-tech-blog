@@ -22,7 +22,7 @@ export function RegenerateButton({ gameId, current }: { gameId: number; current:
   }
 
   return (
-    <div className="mb-4 flex items-center gap-2 text-xs text-gray-400">
+    <div className="mb-4 flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
       <button onClick={regen} disabled={busy} className="underline disabled:opacity-50">
         {busy ? '重新生成中…（约 1 分钟）' : current === 'beginner' ? '觉得太简单？换「熟悉领域」难度重开' : '觉得太难？换「初学者」难度重开'}
       </button>
