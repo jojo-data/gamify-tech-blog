@@ -8,7 +8,7 @@ const HintBodySchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('glossary'), gameId: z.number().int().positive(), nodeId: z.string(), query: z.string().min(1).max(200), explanation: z.string().max(2000) }),
   z.object({
     kind: z.literal('question'), gameId: z.number().int().positive(), nodeId: z.string(), query: z.string().min(1).max(500),
-    history: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(2000) })).max(12).optional(),
+    history: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(2000) })).max(200).optional(),
   }),
 ])
 

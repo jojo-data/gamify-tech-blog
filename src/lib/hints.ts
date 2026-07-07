@@ -7,6 +7,12 @@ import { KnowledgeProfileSchema } from './profile'
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string }
 
+// 安全网而非功能限制：200 条 × 2000 字符（历史 ≈10 万 token）+ 文章 20 万字符（≈5 万 token），
+// 单次请求稳在 20 万 token 内；隐式前缀缓存让文章部分在多轮中按缓存价计费。
+export const ARTICLE_MAX_CHARS = 200_000
+export const HISTORY_MAX_MESSAGES = 200
+export const HISTORY_MESSAGE_MAX_CHARS = 2_000
+
 export async function recordGlossaryHint(db: Db, gameId: number, nodeId: string, term: string, explanation: string): Promise<void> {
   const existing = await db.select().from(hints)
     .where(and(eq(hints.gameId, gameId), eq(hints.kind, 'glossary'), eq(hints.query, term))).limit(1)
@@ -25,14 +31,14 @@ export async function answerQuestionHint(
   const profile = KnowledgeProfileSchema.parse(row.game.profile)
   const node = spec.nodes.find(n => n.id === nodeId)
   const nodeText = node && 'text' in node ? node.text : ''
-  const trimmed = history.slice(-12).map(m => ({ role: m.role, content: m.content.slice(0, 2000) }))
+  const trimmed = history.slice(-HISTORY_MAX_MESSAGES).map(m => ({ role: m.role, content: m.content.slice(0, HISTORY_MESSAGE_MAX_CHARS) }))
   const historyBlock = trimmed.length > 0
     ? `\n之前的对话：\n${trimmed.map(m => `${m.role === 'user' ? '玩家' : '导师'}：${m.content}`).join('\n')}\n`
     : ''
   const prompt = `你是一名耐心的技术导师。玩家在一个基于下面文章的学习游戏中遇到看不懂的地方。用文章的原文语言（${profile.language}）、面向初学者的白话回答，150 词以内，只解释概念与背景，不要剧透游戏题目的答案。如果玩家在追问，请承接上文继续深入。
 
 文章片段：
-${row.article.content.slice(0, 40000)}
+${row.article.content.slice(0, ARTICLE_MAX_CHARS)}
 ${historyBlock}
 当前游戏情景：
 ${nodeText}

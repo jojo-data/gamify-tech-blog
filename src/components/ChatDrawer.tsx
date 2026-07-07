@@ -36,7 +36,7 @@ export function ChatDrawer({ gameId, nodeId }: { gameId: number; nodeId: string 
     const question = input.trim()
     if (!question || busy) return
     setBusy(true); setError(false)
-    const history = messages.slice(-12)
+    const history = messages.slice(-200)
     setMessages(m => [...m, { role: 'user', content: question }])
     try {
       const res = await fetch('/api/hints', {

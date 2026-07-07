@@ -6,7 +6,12 @@ export type LlmClient = { complete(prompt: string): Promise<string> }
 function makeClient(model: string, maxOutputTokens: number): LlmClient {
   return {
     async complete(prompt) {
-      const { text } = await generateText({ model, maxOutputTokens, prompt })
+      const { text } = await generateText({
+        model, maxOutputTokens, prompt,
+        // 隐式缓存供应商（Google 等）本就自动生效；对 Anthropic 这类显式缓存供应商，
+        // 由 Gateway 自动加 cache_control——completeJson 重试与换难度重开时命中文章前缀缓存
+        providerOptions: { gateway: { caching: 'auto' } },
+      })
       return text
     },
   }

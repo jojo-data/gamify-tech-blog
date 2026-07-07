@@ -53,15 +53,18 @@ test('listGameHints 按 query 去重（大小写不敏感）', async () => {
   expect(await listGameHints(db, g.id)).toHaveLength(1)
 })
 
-test('history 拼入 prompt：顺序、前缀、12 条与 2000 字符截断', async () => {
+test('history 拼入 prompt：顺序、前缀、200 条安全网与 2000 字符截断', async () => {
   const db = createDb(':memory:')
   const g = await seedGame(db)
   const prompts: string[] = []
   const lite: LlmClient = { async complete(p) { prompts.push(p); return 'answer' } }
+  // 202 条：最旧一轮（dropped-q/dropped-a）应被 200 条安全网裁掉
   const history: ChatMessage[] = [
-    ...Array.from({ length: 6 }, (_, i): ChatMessage[] => [
-      { role: 'user', content: `old-q${i}` },
-      { role: 'assistant', content: `old-a${i}` },
+    { role: 'user', content: 'dropped-q' },
+    { role: 'assistant', content: 'dropped-a' },
+    ...Array.from({ length: 99 }, (_, i): ChatMessage[] => [
+      { role: 'user', content: `kept-q${i}` },
+      { role: 'assistant', content: `kept-a${i}` },
     ]).flat(),
     { role: 'user', content: 'recent-q' },
     { role: 'assistant', content: 'x'.repeat(3000) },
@@ -70,8 +73,8 @@ test('history 拼入 prompt：顺序、前缀、12 条与 2000 字符截断', as
   const p = prompts[0]
   expect(p).toContain('之前的对话')
   expect(p).toContain('玩家：recent-q')
-  expect(p).not.toContain('old-q0')                      // 14 条只留最近 12 条
-  expect(p).toContain('玩家：old-q1')
+  expect(p).not.toContain('dropped-q')                   // 202 条只留最近 200 条
+  expect(p).toContain('玩家：kept-q0')
   expect(p).not.toContain('x'.repeat(2001))              // 单条截 2000
   expect(p.indexOf('之前的对话')).toBeGreaterThan(p.indexOf('文章片段'))
   expect(p.indexOf('之前的对话')).toBeLessThan(p.indexOf('当前游戏情景'))

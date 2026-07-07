@@ -12,13 +12,13 @@
 
 - `answerQuestionHint(db, lite, gameId, nodeId, question, history?)`：新增 `history: {role: 'user'|'assistant', content: string}[]` 参数（调用方传最近若干轮）。
 - prompt 结构：指令 → 文章片段 → **对话历史段（若非空）** → 当前节点文本 → 玩家问题。
-- 服务端裁剪：history 最多取最近 **12 条消息**（6 轮），每条 content 超 2000 字符截断。
-- 文章上下文窗口从 20000 提升到 **40000 字符**。
+- 服务端裁剪：history 最多取最近 **200 条消息**（安全网，非功能限制——2026-07-07 按用户决策放开轮数），每条 content 超 2000 字符截断。
+- 文章上下文窗口从 20000 提升到 **200000 字符**（防御性上限；隐式前缀缓存使多轮重复成本按缓存价计）。
 - 每个提问仍独立落一条 hint（kind='question'，query=问题、explanation=回答）——归档 / Knowledge gaps / 术语卡机制零改动。
 
 ## 2. API
 
-- `POST /api/hints`（question 分支）：body 增加可选 `history` 数组，zod 校验（role enum、content string max 2000、数组 max 12）。glossary 分支不变。
+- `POST /api/hints`（question 分支）：body 增加可选 `history` 数组，zod 校验（role enum、content string max 2000、数组 max 200）。glossary 分支不变。
 - 新增 `GET /api/hints?gameId=<id>`：返回该局全部 question 类 hints（按 createdAt 升序，`{nodeId, query, explanation, createdAt}[]`），用于刷新后恢复对话。gameId 非法返回 400 中文。
 
 ## 3. UI — ChatDrawer
