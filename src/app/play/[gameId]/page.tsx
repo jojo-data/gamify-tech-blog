@@ -4,6 +4,7 @@ import { getDb } from '@/db'
 import { games } from '@/db/schema'
 import { GameSpecSchema } from '@/lib/gamespec'
 import { GameRuntime } from '@/components/GameRuntime'
+import { RegenerateButton } from '@/components/RegenerateButton'
 
 export default async function PlayPage({ params }: { params: Promise<{ gameId: string }> }) {
   const { gameId } = await params
@@ -13,6 +14,7 @@ export default async function PlayPage({ params }: { params: Promise<{ gameId: s
   const spec = GameSpecSchema.parse(game.spec)
   return (
     <main className="mx-auto max-w-2xl p-8">
+      <RegenerateButton gameId={game.id} current={game.difficulty} />
       <GameRuntime spec={spec} gameId={game.id} />
     </main>
   )

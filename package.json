@@ -12,8 +12,8 @@
     "golden": "tsx --env-file=.env scripts/golden.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.110.0",
     "@mozilla/readability": "^0.6.0",
+    "ai": "^6.0.219",
     "better-sqlite3": "^12.11.1",
     "drizzle-orm": "^0.45.2",
     "jsdom": "^29.1.1",

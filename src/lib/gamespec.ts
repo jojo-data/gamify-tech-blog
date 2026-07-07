@@ -35,6 +35,9 @@ export const EndNodeSchema = z.object({
   id: z.string(), type: z.literal('end'), summary: z.string(),
 })
 
+export const GlossaryEntrySchema = z.object({ term: z.string(), explanation: z.string() })
+export type GlossaryEntry = z.infer<typeof GlossaryEntrySchema>
+
 export const GameNodeSchema = z.discriminatedUnion('type', [
   SceneNodeSchema, QuestionNodeSchema, ClueHubNodeSchema, EndNodeSchema,
 ])
@@ -46,6 +49,7 @@ export const GameSpecSchema = z.object({
   intro: z.string(),
   startNodeId: z.string(),
   nodes: z.array(GameNodeSchema).min(2),
+  glossary: z.array(GlossaryEntrySchema).default([]),
 }).superRefine((spec, ctx) => {
   const ids = new Set<string>()
   for (const n of spec.nodes) {

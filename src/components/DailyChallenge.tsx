@@ -9,7 +9,7 @@ export async function DailyChallenge() {
   if (due.length === 0) return null
   return (
     <section>
-      <h2 className="mb-3 font-semibold text-gray-700">今日挑战（{due.length}）</h2>
+      <h2 className="mb-3 font-semibold text-gray-700 dark:text-gray-300">今日挑战（{due.length}）</h2>
       <div className="flex flex-col gap-3">
         {due.map(c => (
           <ChallengeCard key={c.id} card={{

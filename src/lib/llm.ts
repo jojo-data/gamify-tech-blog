@@ -1,20 +1,30 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { generateText } from 'ai'
 import type { z } from 'zod'
 
 export type LlmClient = { complete(prompt: string): Promise<string> }
 
-export function anthropicClient(): LlmClient {
-  const client = new Anthropic()
-  const model = process.env.ANTHROPIC_MODEL ?? 'claude-fable-5'
+function makeClient(model: string, maxOutputTokens: number): LlmClient {
   return {
     async complete(prompt) {
-      const msg = await client.messages.create({
-        model, max_tokens: 16000,
-        messages: [{ role: 'user', content: prompt }],
+      const { text } = await generateText({
+        model, maxOutputTokens, prompt,
+        // 隐式缓存供应商（Google 等）本就自动生效；对 Anthropic 这类显式缓存供应商，
+        // 由 Gateway 自动加 cache_control——completeJson 重试与换难度重开时命中文章前缀缓存
+        providerOptions: { gateway: { caching: 'auto' } },
       })
-      return msg.content.filter(b => b.type === 'text').map(b => b.text).join('')
+      return text
     },
   }
+}
+
+// 经 Vercel AI Gateway 路由："provider/model" 字符串即可切换任意模型
+export function gatewayClient(): LlmClient {
+  return makeClient(process.env.LLM_MODEL ?? 'anthropic/claude-sonnet-5', 16000)
+}
+
+// 轻量任务（求助问答/翻译/干扰项）走便宜模型
+export function liteClient(): LlmClient {
+  return makeClient(process.env.LLM_LITE_MODEL ?? 'google/gemini-3-flash', 4000)
 }
 
 function extractJson(raw: string): unknown {

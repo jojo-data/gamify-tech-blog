@@ -5,7 +5,7 @@ import type { KnowledgeProfile } from './profile'
 
 const profile: KnowledgeProfile = {
   category: 'postmortem', summary: '一次数据库故障', concepts: [], decisions: [],
-  misconceptions: [], takeaways: ['a', 'b', 'c'],
+  misconceptions: [], takeaways: ['a', 'b', 'c'], language: 'en',
 }
 
 const validSpec = JSON.stringify({
@@ -42,4 +42,25 @@ test('目标模式连续失败后降级为 quiz', async () => {
   const spec = await compileGame(client, profile, '正文')
   expect(spec.mode).toBe('quiz')
   expect(calls).toBeGreaterThan(3)
+})
+
+test('难度指南与语言指令进入 prompt', async () => {
+  const prompts: string[] = []
+  const client: LlmClient = { async complete(p) { prompts.push(p); return validSpec } }
+  await compileGame(client, { ...profile, language: 'en' }, '正文', 'beginner')
+  expect(prompts[0]).toContain('初学者')
+  expect(prompts[0]).toContain('原文语言（en）')
+  expect(prompts[0]).toContain('glossary')
+
+  prompts.length = 0
+  await compileGame(client, { ...profile, language: 'en' }, '正文', 'expert')
+  expect(prompts[0]).toContain('熟悉领域')
+  expect(prompts[0]).toContain('原文语言（en）')
+})
+
+test('难度缺省为 beginner', async () => {
+  const prompts: string[] = []
+  const client: LlmClient = { async complete(p) { prompts.push(p); return validSpec } }
+  await compileGame(client, { ...profile, language: 'en' }, '正文')
+  expect(prompts[0]).toContain('初学者')
 })

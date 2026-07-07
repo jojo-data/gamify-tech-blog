@@ -1,18 +1,20 @@
 import { NextResponse } from 'next/server'
 import { getDb } from '@/db'
-import { anthropicClient } from '@/lib/llm'
+import { gatewayClient } from '@/lib/llm'
 import { fetchArticle } from '@/lib/fetcher'
 import { createGameFromUrl } from '@/lib/pipeline'
 
 export const maxDuration = 600
 
 export async function POST(req: Request) {
-  const { url } = await req.json().catch(() => ({}))
+  const body = await req.json().catch(() => ({}))
+  const url = body?.url
   if (typeof url !== 'string' || !url.startsWith('http')) {
     return NextResponse.json({ error: '请提供合法的文章 URL' }, { status: 400 })
   }
+  const difficulty = body?.difficulty === 'expert' ? 'expert' as const : 'beginner' as const
   try {
-    const gameId = await createGameFromUrl({ db: getDb(), llm: anthropicClient(), fetchArticle }, url)
+    const gameId = await createGameFromUrl({ db: getDb(), llm: gatewayClient(), fetchArticle }, url, difficulty)
     return NextResponse.json({ gameId })
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : '生成失败' }, { status: 400 })
